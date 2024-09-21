@@ -1,0 +1,75 @@
+
+### Authentication Documentation
+
+#### Overview
+This Django blog project implements a basic user authentication system, allowing users to:
+- Register a new account
+- Log in with their credentials
+- Log out of their account
+- View and update their profile
+
+Each part of the authentication system is described below, along with instructions on how to test the features.
+
+#### 1. **User Registration**
+- **URL**: `/register/`
+- **Function**: Allows new users to create an account by providing a username, email, and password.
+- **Template**: `register.html`
+- **Process**: 
+  - User fills out the registration form.
+  - If the form is valid, the user is created in the database.
+  - After registration, the user is redirected to the login page to log in.
+
+##### **Testing User Registration**
+1. Navigate to `/register/` in the browser.
+2. Fill out the registration form with valid credentials.
+3. Check that the user is successfully created and redirected to the login page.
+
+#### 2. **User Login**
+- **URL**: `/login/`
+- **Function**: Allows users to log in using their registered username and password.
+- **Template**: `login.html`
+- **Process**: 
+  - User enters valid credentials.
+  - On successful login, they are redirected to their profile page or another page as needed.
+
+##### **Testing User Login**
+1. Navigate to `/login/` in the browser.
+2. Log in using the registered credentials.
+3. Check that the user is redirected to the profile page (`/profile/`).
+
+#### 3. **User Logout**
+- **URL**: `/logout/`
+- **Function**: Logs the user out of their account.
+- **Template**: None (Redirection after logout).
+- **Process**:
+  - When the user clicks the logout button, they are logged out and redirected to the homepage.
+
+##### **Testing User Logout**
+1. Log in to the account.
+2. Click the “Logout” link in the profile page.
+3. Confirm that the user is logged out and redirected to the homepage.
+
+#### 4. **User Profile**
+- **URL**: `/profile/`
+- **Function**: Displays the user’s profile information such as username and email.
+- **Template**: `profile.html`
+- **Process**: 
+  - Users can view their profile information.
+  - The profile page is accessible only when logged in.
+
+##### **Testing User Profile**
+1. Log in to the account.
+2. Navigate to `/profile/`.
+3. Check that the user’s profile details (username, email) are displayed correctly.
+
+---
+
+### How to Test Each Authentication Feature
+1. **User Registration**: Test registration by attempting to create accounts with different data, including valid and invalid inputs (e.g., short passwords, existing usernames).
+2. **Login**: Test logging in with valid and invalid credentials.
+3. **Logout**: After logging in, test logging out and confirm that the session is ended.
+4. **Profile**: Test viewing the profile when logged in and confirm that unauthorized users cannot access this page.
+
+### Summary
+This documentation covers the implementation and testing of basic authentication features in the Django blog project. It provides a clear guide for users and developers to understand and test the system.
+
