@@ -5,7 +5,7 @@
         {% for post in posts %}
             <li>
                 <a href="{% url 'post-detail' post.pk %}">{{ post.title }}</a> 
-                by {{ post.author }} on {{ post.date_posted }}
+                by {{ post.author }} on {{ post.published_date}}
             </li>
         {% endfor %}
     </ul>
