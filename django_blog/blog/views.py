@@ -6,12 +6,12 @@ from .forms import UserRegisterForm
 from django.shortcuts import get_object_or_404
 from . forms import CommentForm
 from tokenize import Comment
-
+from django.db.models import Q
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.urls import reverse_lazy
 from .models import Post
-
+from taggit.models import Tag
 # ListView to display all posts
 class PostListView(ListView):
     model = Post
@@ -132,3 +132,20 @@ def home(request):
 
 def posts_view(request):
     return render(request, 'posts.html')
+
+from django.db.models import Q
+from .models import Post
+
+def search_view(request):
+    query = request.GET.get('q')
+    results = Post.objects.filter(
+        Q(title__icontains=query) |
+        Q(content__icontains=query) |
+        Q(tags__name__icontains=query)
+    ).distinct()
+    return render(request, 'blog/search_results.html', {'posts': results, 'query': query})
+
+def tagged_posts_view(request, tag_slug):
+    tag = get_object_or_404(Tag, slug=tag_slug)
+    posts = Post.objects.filter(tags=tag)
+    return render(request, 'blog/tagged_posts.html', {'posts': posts, 'tag': tag})

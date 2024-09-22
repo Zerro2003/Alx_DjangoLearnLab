@@ -1,0 +1,4 @@
+<h2>Posts tagged with "{{ tag.name }}"</h2>
+{% for post in posts %}
+    <h3><a href="{% url 'post-detail' post.id %}">{{ post.title }}</a></h3>
+{% endfor %}
