@@ -11,13 +11,15 @@ class UserRegisterForm(UserCreationForm):
         model = User
         fields = ['username', 'email', 'password1', 'password2']
 class PostForm(forms.ModelForm):
-    class meta:
+    class Meta:
         model = Post
-        fields = ['title','content','tags']
-        widjets = {
-            'tags': TagWidget(),
+        fields = ['title', 'content', 'tags']  # Include 'tags' field
+        widgets = {
+            'title': forms.TextInput(attrs={'class': 'form-control'}),  # Example widget for title
+            'content': forms.Textarea(attrs={'class': 'form-control', 'rows': 5}),  # Widget for content
+            'tags': TagWidget(attrs={'class': 'form-control'}),  # TagWidget for tag field
         }
-
+    
 class CommentForm(forms.ModelForm):
     class meta:
         model = Comment
