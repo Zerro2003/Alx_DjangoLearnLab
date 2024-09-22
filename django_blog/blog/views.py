@@ -149,3 +149,13 @@ def tagged_posts_view(request, tag_slug):
     tag = get_object_or_404(Tag, slug=tag_slug)
     posts = Post.objects.filter(tags=tag)
     return render(request, 'blog/tagged_posts.html', {'posts': posts, 'tag': tag})
+
+class PostByTagListView(ListView):
+    model = Post
+    template_name = 'blog/post_list_by_tag.html'  # You can create this template to display the filtered posts
+    context_object_name = 'posts'
+
+    def get_queryset(self):
+        # Get the tag from the URL and filter posts by that tag
+        tag = get_object_or_404(Tag, slug=self.kwargs.get('tag_slug'))
+        return Post.objects.filter(tags__in=[tag])
