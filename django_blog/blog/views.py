@@ -72,7 +72,7 @@ def register(request):
     return render(request, 'blog/register.html', {'form': form})
 
 @login_required
-def add_comment(request, post_id):
+def CommentUpdateView(request, post_id):
     post = get_object_or_404(Post, id=post_id)
     if request.method == 'POST':
         form = CommentForm(request.POST)
@@ -87,7 +87,7 @@ def add_comment(request, post_id):
     return render(request, 'blog/add_comment.html', {'form': form, 'post': post})
 
 @login_required
-def edit_comment(request, comment_id):
+def CommentUpdateView(request, comment_id):
     comment = get_object_or_404(Comment, id=comment_id)
     if request.user != comment.author:
         return redirect('post_detail', post_id=comment.post.id)
@@ -102,7 +102,7 @@ def edit_comment(request, comment_id):
     return render(request, 'blog/edit_comment.html', {'form': form, 'comment': comment})
 
 @login_required
-def delete_comment(request, comment_id):
+def CommentDeleteView(request, comment_id):
     comment = get_object_or_404(Comment, id=comment_id)
     if request.user == comment.author:
         comment.delete()
