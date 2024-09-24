@@ -8,6 +8,7 @@ class UserSerializer(serializers.ModelSerializer):
   # Use get_user_model for custom user
         fields = ('id', 'username', 'email', 'password', 'bio', 'profile_picture', 'followers')
         write_only_fields = ('password',)
+        username = serializers.CharField(max_length=30)
 
     def create(self, validated_data):
         user = get_user_model().objects.create_user(**validated_data)
