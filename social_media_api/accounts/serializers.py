@@ -4,7 +4,8 @@ from rest_framework.authtoken.models import Token
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
-        model = get_user_model()  # Use get_user_model for custom user
+        model = get_user_model()
+  # Use get_user_model for custom user
         fields = ('id', 'username', 'email', 'password', 'bio', 'profile_picture', 'followers')
         write_only_fields = ('password',)
 
