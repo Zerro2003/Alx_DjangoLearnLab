@@ -8,7 +8,10 @@ from .models import CustomUser
 from rest_framework import viewsets, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Responsefrom
+from rest_framework.generics import GenericAPIView
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+
 class UserRegisterView(generics.CreateAPIView):
     queryset = CustomUser.objects.all()
     serializer_class = UserSerializer
@@ -34,3 +37,4 @@ class FollowViewSet(viewsets.ViewSet):
         user_to_unfollow = CustomUser.objects.get(pk=pk)
         request.user.following.remove(user_to_unfollow)
         return Response({'message': 'Unfollowed successfully'}, status=status.HTTP_200_OK)
+        
