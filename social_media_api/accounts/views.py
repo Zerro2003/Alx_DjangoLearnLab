@@ -9,6 +9,8 @@ from rest_framework import viewsets, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Responsefrom
 from rest_framework.generics import GenericAPIView
+from rest_framework import generics.GenericAPIView
+from rest_framework.permissions import permissions.IsAuthenticated
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
