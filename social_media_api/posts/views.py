@@ -62,7 +62,13 @@ class FollowingPostsListView(ListAPIView):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def like_post(request, pk):
-    post = get_object_or_404(Post, pk=pk)
+    """
+    Like a post.
+    """
+    try:
+        post = get_object_or_404(Post, pk=pk)
+    except Post.DoesNotExist:
+        return Response({'error': 'Post not found'}, status=status.HTTP_404_NOT_FOUND)
 
     user = request.user
 
@@ -86,7 +92,13 @@ def like_post(request, pk):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def unlike_post(request, pk):
-    post = get_object_or_404(Post, pk=pk)
+    """
+    Unlike a post.
+    """
+    try:
+        post = get_object_or_404(Post, pk=pk)
+    except Post.DoesNotExist:
+        return Response({'error': 'Post not found'}, status=status.HTTP_404_NOT_FOUND)
 
     user = request.user
 
