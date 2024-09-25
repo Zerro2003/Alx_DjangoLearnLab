@@ -4,7 +4,7 @@ from .models import Post, Comment
 from .serializers import PostSerializer, CommentSerializer
 from rest_framework.decorators import action
 from rest_framework.response import Response
-
+from rest_framework.generics import ListAPIView
 class PostViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
@@ -44,3 +44,12 @@ class CommentViewSet(viewsets.ModelViewSet):
         post_id = self.request.data.get('post')
         if not Post.objects.filter(pk=post_id).exists():
             raise serializers.ValidationError('Invalid post ID provided')
+        
+class FollowingPostsListView(ListAPIView):
+    serializer_class = PostSerializer
+
+    def get_queryset(self):
+        # Assuming following_users is accessible from the request or view context
+        following_users = self.request.user.following.all()  # Replace with your logic
+        posts = Post.objects.filter(author__in=following_users).order_by('-created_at')  # Order by descending creation date
+        return posts
