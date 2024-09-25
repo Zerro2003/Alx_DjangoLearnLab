@@ -66,14 +66,14 @@ def like_post(request, pk):
     Like a post.
     """
     try:
-        post = get_object_or_404(Post, pk=pk)
+        post = generics.get_object_or_404(Post, pk=pk)
     except Post.DoesNotExist:
         return Response({'error': 'Post not found'}, status=status.HTTP_404_NOT_FOUND)
 
     user = request.user
 
     # Check if user already liked the post
-    like, created = Like.objects.get_or_create(user=user, post=post)
+    like, created = Like.objects.get_or_create(user=request.user, post=post)
     if not created:
         return Response({'error': 'You already liked this post'}, status=status.HTTP_400_BAD_REQUEST)
 
