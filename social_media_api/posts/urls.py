@@ -10,4 +10,5 @@ urlpatterns = [
     path('', include(router.urls)),
     path('admin/', admin.site.urls),
     path('api/', include('posts.urls')),
+    path('feed/', views.PostViewSet.as_view({'get': 'feed'}), name='feed'),
 ]

@@ -3,12 +3,19 @@ from rest_framework import viewsets, permissions, serializers
 from .models import Post, Comment
 from .serializers import PostSerializer, CommentSerializer
 from rest_framework.decorators import action
-
+from rest_framework.response import Response
 
 class PostViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
+    @action(detail=False, methods=['get']) 
 
+    def feed(self, request):
+        user = request.user
+        followed_users = user.following.all()
+        feed_posts = Post.objects.filter(author__in=followed_users).order_by('-created_at')
+        serializer = self.get_serializer(feed_posts, many=True)
+        return Response(serializer.data)
     def get_permissions(self):
         if self.action in ['create']:
             permission_classes = [permissions.IsAuthenticated]
