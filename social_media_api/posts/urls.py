@@ -11,4 +11,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('posts.urls')),
     path('feed/', views.PostViewSet.as_view({'get': 'feed'}), name='feed'),
+    path('posts/<int:pk>/like/', views.like_post, name='like-post'),
+    path('posts/<int:pk>/unlike/', views.unlike_post, name='unlike-post'),
 ]
