@@ -9,17 +9,19 @@ from rest_framework.decorators import action
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.generics import ListAPIView
+
 class PostViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
-    @action(detail=False, methods=['get']) 
 
+    @action(detail=False, methods=['get'])
     def feed(self, request):
         user = request.user
         followed_users = user.following.all()
         feed_posts = Post.objects.filter(author__in=followed_users).order_by('-created_at')
         serializer = self.get_serializer(feed_posts, many=True)
         return Response(serializer.data)
+
     def get_permissions(self):
         if self.action in ['create']:
             permission_classes = [permissions.IsAuthenticated]
@@ -28,7 +30,7 @@ class PostViewSet(viewsets.ModelViewSet):
         return permission_classes()
 
     def perform_create(self, serializer):
-        serializer.save(author=self.request.user)  # Set current user as author
+        serializer.save(author=self.request.user)
 
 class CommentViewSet(viewsets.ModelViewSet):
     queryset = Comment.objects.all()
@@ -42,40 +44,32 @@ class CommentViewSet(viewsets.ModelViewSet):
         return permission_classes()
 
     def perform_create(self, serializer):
-        serializer.save(author=self.request.user)  # Set current user as author
+        serializer.save(author=self.request.user)
 
         # Additional check to ensure user can only comment on existing posts
         post_id = self.request.data.get('post')
         if not Post.objects.filter(pk=post_id).exists():
             raise serializers.ValidationError('Invalid post ID provided')
-        
+
 class FollowingPostsListView(ListAPIView):
     serializer_class = PostSerializer
 
     def get_queryset(self):
-        # Assuming following_users is accessible from the request or view context
-        following_users = self.request.user.following.all()  # Replace with your logic
-        posts = Post.objects.filter(author__in=following_users).order_by('-created_at')  # Order by descending creation date
+        following_users = self.request.user.following.all()
+        posts = Post.objects.filter(author__in=followed_users).order_by('-created_at')
         return posts
-    
+
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def like_post(request, pk):
-    try:
-        post = Post.objects.get(pk=pk)
-    except Post.DoesNotExist:
-        return Response({'error': 
- 'Post not found'}, status=status.HTTP_404_NOT_FOUND) 
-
+    post = get_object_or_404(Post, pk=pk)
 
     user = request.user
 
     # Check if user already liked the post
-    if Like.objects.filter(user=user, post=post).exists():
+    like, created = Like.objects.get_or_create(user=user, post=post)
+    if not created:
         return Response({'error': 'You already liked this post'}, status=status.HTTP_400_BAD_REQUEST)
-
-    # Create a new Like object
-    like = Like.objects.create(user=user, post=post)
 
     # Create a notification for the post author (if not the current user)
     if user != post.author:
@@ -92,21 +86,14 @@ def like_post(request, pk):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def unlike_post(request, pk):
-    try:
-        post = Post.objects.get(pk=pk)
-    except Post.DoesNotExist:
-        return Response({'error': 
- 'Post not found'}, status=status.HTTP_404_NOT_FOUND)  
-
+    post = get_object_or_404(Post, pk=pk)
 
     user = request.user
 
-    # Check if user has liked the post
-    like = Like.objects.filter(user=user, post=post)
-    if not like.exists():
+    try:
+        like = Like.objects.get(user=user, post=post)
+        like.delete()
+    except Like.DoesNotExist:
         return Response({'error': 'You haven\'t liked this post yet'}, status=status.HTTP_400_BAD_REQUEST)
-
-    # Delete the Like object
-    like.delete()
 
     return Response({'message': 'Post unliked successfully'}, status=status.HTTP_200_OK)
